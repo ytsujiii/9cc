@@ -33,7 +33,7 @@ struct Node {
   Node *lhs;
   Node *rhs;
   int val;
-}
+};
 
 Token *token;
 char *user_input;
