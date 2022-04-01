@@ -60,7 +60,7 @@ Node *expr() {
     if (consume('+'))
       node = new_node(ND_ADD, node, mul());
     else if (consume('-'))
-      node = new_node(ND_SUM, node, mul());
+      node = new_node(ND_SUB, node, mul());
     else
       return node;
   }
