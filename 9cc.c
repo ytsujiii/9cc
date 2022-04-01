@@ -157,7 +157,7 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    error_at(token->str, "トークナイズできません");
+    error_at(cur->str + 1, "トークナイズできません");
   }
 
   new_token(TK_EOF, cur, p);
