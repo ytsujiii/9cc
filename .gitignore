@@ -1,2 +1,4 @@
 9cc
-
+*.o
+tmp
+tmp.s
