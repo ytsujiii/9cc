@@ -16,15 +16,16 @@ struct Token {
   Token *next;
   int val;
   char *str;
+  int len;
 };
 
 Token *token;
 
-bool consume(char op);
-void expect(char op);
+bool consume(char *op);
+void expect(char *op);
 int expect_number();
 bool at_eof();
-Token *new_token(TokenKind kind, Token *cur, char *str);
+Token *new_token(TokenKind kind, Token *cur, char *str, int length);
 Token *tokenize(char *p);
 
 #endif
