@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -53,8 +54,13 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' ||
-        *p == ')') {
+    if (!memcmp(p, "==", 2) || !memcmp(p, "!=", 2) || !memcmp(p, "<=", 2) ||
+        !memcmp(p, ">=", 2)) {
+      cur = new_token(TK_RESERVED, cur, p, 2);
+      p += 2;
+      continue;
+    } else if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' ||
+               *p == ')' || *p == '<' || *p == '>') {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }

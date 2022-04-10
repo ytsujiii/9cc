@@ -7,6 +7,10 @@ typedef enum {
   ND_MUL,
   ND_DIV,
   ND_NUM,
+  ND_EQUAL,
+  ND_NOT_EQUAL,
+  ND_LESS_THAN,
+  ND_LESS_THAN_OR_EQUAL_TO,
 } NodeKind;
 
 typedef struct Node Node;
@@ -22,9 +26,12 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 Node *new_node_num(int val);
 
 Node *expr();
+Node *equality();
+Node *relational();
+Node *add();
 Node *mul();
-Node *primary();
 Node *unary();
+Node *primary();
 
 void gen();
 

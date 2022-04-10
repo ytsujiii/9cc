@@ -19,6 +19,40 @@ Node *new_node_num(int val) {
 }
 
 Node *expr() {
+  return equality();
+}
+
+Node *equality() {
+  Node *node = relational();
+
+  for (;;) {
+    if (consume("=="))
+      node = new_node(ND_EQUAL, node, relational());
+    else if (consume("!="))
+      node = new_node(ND_NOT_EQUAL, node, relational());
+    else
+      return node;
+  }
+}
+
+Node *relational() {
+  Node *node = add();
+
+  for (;;) {
+    if (consume("<="))
+      node = new_node(ND_LESS_THAN_OR_EQUAL_TO, node, add());
+    else if (consume(">="))
+      node = new_node(ND_LESS_THAN_OR_EQUAL_TO, add(), node);
+    else if (consume("<"))
+      node = new_node(ND_LESS_THAN, node, add());
+    else if (consume(">"))
+      node = new_node(ND_LESS_THAN, add(), node);
+    else
+      return node;
+  }
+}
+
+Node *add() {
   Node *node = mul();
 
   for (;;) {
@@ -44,6 +78,14 @@ Node *mul() {
   }
 }
 
+Node *unary() {
+  if (consume("+"))
+    return primary();
+  else if (consume("-"))
+    return new_node(ND_SUB, new_node_num(0), primary());
+  return primary();
+}
+
 Node *primary() {
   if (consume("(")) {
     Node *node = expr();
@@ -52,14 +94,6 @@ Node *primary() {
   }
 
   return new_node_num(expect_number());
-}
-
-Node *unary() {
-  if (consume("+"))
-    return primary();
-  if (consume("-"))
-    return new_node(ND_SUB, new_node_num(0), primary());
-  return primary();
 }
 
 void gen(Node *node) {
@@ -88,6 +122,22 @@ void gen(Node *node) {
     printf("  cqo\n");
     printf("  idiv rax, rdi\n");
     break;
+  case ND_EQUAL:
+    printf("  cmp rax, rdi\n");
+    printf("  sete al\n");
+    printf("  movzb rax, al\n");
+  case ND_NOT_EQUAL:
+    printf("  cmp rax, rdi\n");
+    printf("  setne al\n");
+    printf("  movzb rax, al\n");
+  case ND_LESS_THAN:
+    printf("  cmp rax, rdi\n");
+    printf("  setl al\n");
+    printf("  movzb rax, al\n");
+  case ND_LESS_THAN_OR_EQUAL_TO:
+    printf("  cmp rax, rdi\n");
+    printf("  setle al\n");
+    printf("  movzb rax, al\n");
   }
 
   printf("  push rax\n");
